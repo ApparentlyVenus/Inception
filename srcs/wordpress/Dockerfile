@@ -1,5 +1,8 @@
 FROM alpine:3.18
 
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
+
 # Install PHP-FPM and required extensions
 RUN apk add --no-cache \
     php81-fpm \
@@ -19,9 +22,14 @@ RUN apk add --no-cache \
     php81-iconv \
     php81-gd \
     php81-cli \
+    php81-phar \
     wget \
     unzip \
     netcat-openbsd
+
+# Download WP-CLI during build
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && \
+    chmod +x /usr/local/bin/wp
 
 # Create required directories (use root ownership for now)
 RUN mkdir -p /var/www/html && \
