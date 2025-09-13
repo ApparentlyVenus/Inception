@@ -1,5 +1,6 @@
 FROM alpine:3.18
 
+# Install PHP-FPM and required extensions
 RUN apk add --no-cache \
     php81-fpm \
     php81-pdo_mysql \
@@ -14,21 +15,28 @@ RUN apk add --no-cache \
     php81-xml \
     php81-zip \
     php81-redis \
+    php81-session \
+    php81-iconv \
+    php81-gd \
+    php81-cli \
     wget \
     unzip \
     netcat-openbsd
 
+# Create required directories (use root ownership for now)
 RUN mkdir -p /var/www/html && \
     mkdir -p /run/php
 
+# Copy configuration files
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 COPY conf/php.ini /etc/php81/php.ini
 
-COPY tools/wordpress-setup.sh /usr/local/bin
+# Copy setup script
+COPY tools/wordpress-setup.sh /usr/local/bin/wordpress-setup.sh
 RUN chmod +x /usr/local/bin/wordpress-setup.sh
 
 WORKDIR /var/www/html
 
 EXPOSE 9000
 
-ENTRYPOINT [ "wordpress-setup.sh" ]
+ENTRYPOINT ["wordpress-setup.sh"]
