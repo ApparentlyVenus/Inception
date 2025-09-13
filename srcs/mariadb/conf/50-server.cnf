@@ -1,5 +1,32 @@
 [server]
+
 [mysqld]
+# Network configuration - MUST allow remote connections
 bind-address = 0.0.0.0
 port = 3306
+
+# Socket configuration
 socket = /run/mysqld/mysqld.sock
+
+# Data directory
+datadir = /var/lib/mysql
+
+# Process ID file
+pid-file = /run/mysqld/mysqld.pid
+
+# User
+user = mysql
+
+# Character set
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# InnoDB configuration
+default-storage-engine = innodb
+
+[client]
+default-character-set = utf8mb4
+socket = /run/mysqld/mysqld.sock
+
+[mysql]
+default-character-set = utf8mb4
