@@ -6,6 +6,8 @@ RUN apk add --no-cache \
     mariadb-client \
     mariadb-server-utils
 
+COPY conf/50-server.cnf /etc/my.cnf.d/50-server.cnf
+    
 # Copy initialization script
 COPY tools/init.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init.sh

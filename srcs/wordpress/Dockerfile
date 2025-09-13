@@ -21,7 +21,7 @@ RUN apk add --no-cache \
 RUN mkdir -p /var/www/html && \
     mkdir -p /run/php
 
-COPY conf/www.conf /ect/php81/php-fpm.d/www.conf
+COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 COPY conf/php.ini /etc/php81/php.ini
 
 COPY tools/wordpress-setup.sh /usr/local/bin
