@@ -59,6 +59,13 @@ services:
       - inception
     restart: always
 
+  redis:
+    build: ./bonus/redis
+    container_name: redis
+    networks:
+      - inception
+    restart: always
+
 volumes:
   mariadb_data:
     driver: local

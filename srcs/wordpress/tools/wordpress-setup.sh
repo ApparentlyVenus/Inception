@@ -25,6 +25,14 @@ if [ ! -f "wp-config.php" ]; then
     sed -i "s/password_here/${DB_PASS}/g" wp-config.php
     sed -i "s/localhost/mariadb/g" wp-config.php
     
+    # Add Redis configuration to wp-config.php
+    echo "" >> wp-config.php
+    echo "/* Redis Configuration */" >> wp-config.php
+    echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
+    echo "define('WP_REDIS_PORT', 6379);" >> wp-config.php
+    echo "define('WP_REDIS_DATABASE', 0);" >> wp-config.php
+    echo "" >> wp-config.php
+    
     # Set proper permissions
     chown -R nobody:nobody /var/www/html
     
@@ -52,6 +60,12 @@ if ! wp core is-installed --allow-root 2>/dev/null; then
         --user_pass="${WP_USER_PASS}" \
         --role=subscriber \
         --allow-root
+    
+    echo "Installing Redis Object Cache plugin..."
+    wp plugin install redis-cache --activate --allow-root
+    
+    echo "Enabling Redis object cache..."
+    wp redis enable --allow-root
     
     echo "WordPress installation complete!"
 else

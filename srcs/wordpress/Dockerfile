@@ -1,7 +1,9 @@
 FROM alpine:3.18
 
+# Use HTTP repositories to avoid SSL issues
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories && \
+    apk update
 
 # Install PHP-FPM and required extensions
 RUN apk add --no-cache \
@@ -23,6 +25,7 @@ RUN apk add --no-cache \
     php81-gd \
     php81-cli \
     php81-phar \
+    php81-pecl-redis \
     wget \
     unzip \
     netcat-openbsd
