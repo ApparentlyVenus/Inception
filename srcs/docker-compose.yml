@@ -66,6 +66,13 @@ services:
       - inception
     restart: always
 
+  static-site:
+    build: ./bonus/static-site
+    container_name: static-site
+    networks:
+      - inception
+    restart: always
+
 volumes:
   mariadb_data:
     driver: local
