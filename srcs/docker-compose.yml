@@ -50,6 +50,15 @@ services:
       - inception
     restart: always
 
+  adminer:
+    build: ./bonus/adminer
+    container_name: adminer
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    restart: always
+
 volumes:
   mariadb_data:
     driver: local
@@ -63,6 +72,12 @@ volumes:
       type: none
       o: bind
       device: /home/odana/data/wordpress
+  adminer_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/odana/data/adminer
 
 networks:
   inception:
