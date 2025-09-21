@@ -19,12 +19,16 @@ services:
     depends_on:
       - mariadb
     environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - WP_ADMIN_USER=${WP_ADMIN_USER}
-      - WP_ADMIN_PASS=${WP_ADMIN_PASS}
-      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+    - DB_NAME=${DB_NAME}
+    - DB_USER=${DB_USER}
+    - DB_PASS=${DB_PASS}
+    - DOMAIN_NAME=${DOMAIN_NAME}
+    - WP_ADMIN_USER=${WP_ADMIN_USER}
+    - WP_ADMIN_PASS=${WP_ADMIN_PASS}
+    - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+    - WP_USER=${WP_USER}
+    - WP_USER_PASS=${WP_USER_PASS}
+    - WP_USER_EMAIL=${WP_USER_EMAIL}
     volumes:
       - wordpress_data:/var/www/html
     networks:

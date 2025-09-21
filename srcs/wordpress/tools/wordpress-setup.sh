@@ -25,12 +25,37 @@ if [ ! -f "wp-config.php" ]; then
     sed -i "s/password_here/${DB_PASS}/g" wp-config.php
     sed -i "s/localhost/mariadb/g" wp-config.php
     
-    # Set proper permissions (use nobody user which exists in Alpine)
+    # Set proper permissions
     chown -R nobody:nobody /var/www/html
     
     echo "WordPress configuration complete!"
 else
     echo "WordPress already configured."
+fi
+
+# Install WordPress if not already installed (BEFORE starting PHP-FPM)
+if ! wp core is-installed --allow-root 2>/dev/null; then
+    echo "Installing WordPress..."
+    
+    wp core install \
+        --url="https://${DOMAIN_NAME}" \
+        --title="Inception Website" \
+        --admin_user="${WP_ADMIN_USER}" \
+        --admin_password="${WP_ADMIN_PASS}" \
+        --admin_email="${WP_ADMIN_EMAIL}" \
+        --allow-root
+    
+    echo "Creating regular user..."
+    wp user create \
+        "${WP_USER}" \
+        "${WP_USER_EMAIL}" \
+        --user_pass="${WP_USER_PASS}" \
+        --role=subscriber \
+        --allow-root
+    
+    echo "WordPress installation complete!"
+else
+    echo "WordPress already installed."
 fi
 
 echo "Starting PHP-FPM..."
