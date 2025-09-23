@@ -6,6 +6,7 @@ all: up
 up:
 	@mkdir -p $(DATA_DIR)/mariadb
 	@mkdir -p $(DATA_DIR)/wordpress
+	@mkdir -p $(DATA_DIR)/adminer
 	docker compose -f $(COMPOSE_FILE) up -d --build
 
 down:
