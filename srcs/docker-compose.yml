@@ -93,16 +93,14 @@ services:
     depends_on:
       - wordpress
 
-  portainer:
-    build: ./bonus/portainer
-    container_name: portainer
+  grafana:
+    build: ./bonus/grafana
+    container_name: grafana
     volumes:
-      - portainer_data:/data
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - grafana_data:/var/lib/grafana
     networks:
       - inception
     restart: always
-
 volumes:
   mariadb_data:
     driver: local
@@ -121,7 +119,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/odana/data/portainer
+      device: /home/odana/data/adminer
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/odana/data/grafana
 
 networks:
   inception:

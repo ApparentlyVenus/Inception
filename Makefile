@@ -7,7 +7,7 @@ up:
 	@mkdir -p $(DATA_DIR)/mariadb
 	@mkdir -p $(DATA_DIR)/wordpress
 	@mkdir -p $(DATA_DIR)/adminer
-	@mkdir -p $(DATA_DIR)/portainer
+	@mkdir -p $(DATA_DIR)/grafana
 	docker compose -f $(COMPOSE_FILE) up -d --build
 
 down:
