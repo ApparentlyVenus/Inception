@@ -25,7 +25,6 @@ RUN apk add --no-cache \
     php81-gd \
     php81-cli \
     php81-phar \
-    php81-pecl-redis \
     php81-ctype \
     php81-tokenizer \
     php81-simplexml \

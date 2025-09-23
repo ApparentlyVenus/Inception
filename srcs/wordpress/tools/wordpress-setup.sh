@@ -72,7 +72,16 @@ while ! nc -z redis 6379; do
     sleep 2
 done
 
-# Test Redis functionality
+# Verify PHP Redis extension is loaded
+echo "Checking PHP Redis extension..."
+if php -m | grep -q redis; then
+    echo "Redis PHP extension is loaded"
+else
+    echo "ERROR: Redis PHP extension is NOT loaded!"
+    php -m | grep redis
+fi
+
+# Test Redis functionality with timeout
 echo "Testing Redis functionality..."
 timeout=10
 while [ $timeout -gt 0 ]; do
@@ -85,20 +94,24 @@ while [ $timeout -gt 0 ]; do
     sleep 1
 done
 
-# Add Redis configuration to wp-config.php (only if not already there)
+# Remove any existing object cache files to start fresh
+echo "Cleaning up existing Redis cache files..."
+rm -f /var/www/html/wp-content/object-cache.php
+
 # Add Redis configuration to wp-config.php (only if not already there)
 if ! grep -q "WP_REDIS_HOST" wp-config.php; then
     echo "Adding Redis configuration to wp-config.php..."
     
-    # Add Redis configuration to wp-config.php
-    echo "" >> wp-config.php
-    echo "/* Redis Configuration */" >> wp-config.php
-    echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
-    echo "define('WP_REDIS_PORT', 6379);" >> wp-config.php
-    echo "define('WP_REDIS_DATABASE', 0);" >> wp-config.php
-    echo "define('WP_REDIS_TIMEOUT', 1);" >> wp-config.php
-    echo "define('WP_REDIS_READ_TIMEOUT', 1);" >> wp-config.php
-    echo "" >> wp-config.php
+    # Add before the "That's all" comment
+    sed -i "/That's all, stop editing/i\\
+/* Redis Configuration */\\
+define('WP_REDIS_HOST', 'redis');\\
+define('WP_REDIS_PORT', 6379);\\
+define('WP_REDIS_DATABASE', 0);\\
+define('WP_REDIS_TIMEOUT', 1);\\
+define('WP_REDIS_READ_TIMEOUT', 1);\\
+\\
+" wp-config.php
     
     echo "Redis configuration added to wp-config.php"
 fi
@@ -116,13 +129,16 @@ if ! wp plugin is-active redis-cache --path=/var/www/html --allow-root 2>/dev/nu
     echo "Redis plugin activated"
 fi
 
-# Enable Redis object cache
+# Enable Redis object cache with error checking
 echo "Enabling Redis object cache..."
-wp redis enable --path=/var/www/html --allow-root 2>/dev/null && echo "Redis cache enabled successfully" || echo "Redis cache enable failed or already enabled"
-
-# Verify Redis setup
-echo "Final Redis verification..."
-wp redis status --path=/var/www/html --allow-root 2>/dev/null || echo "Redis status check failed"
+if wp redis enable --path=/var/www/html --allow-root 2>/dev/null; then
+    echo "Redis cache enabled successfully"
+    # Verify it's working
+    wp redis status --path=/var/www/html --allow-root 2>/dev/null
+else
+    echo "Redis cache enable failed - checking diagnostics..."
+    wp redis status --path=/var/www/html --allow-root 2>/dev/null || true
+fi
 
 echo "Starting PHP-FPM..."
 # Start PHP-FPM in foreground
