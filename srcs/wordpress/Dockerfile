@@ -26,9 +26,15 @@ RUN apk add --no-cache \
     php81-cli \
     php81-phar \
     php81-pecl-redis \
+    php81-ctype \
+    php81-tokenizer \
+    php81-simplexml \
+    php81-xmlreader \
+    php81-xmlwriter \
     wget \
     unzip \
-    netcat-openbsd
+    netcat-openbsd \
+    redis
 
 # Download WP-CLI during build
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && \
