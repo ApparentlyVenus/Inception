@@ -26,7 +26,7 @@ RUN wget https://github.com/portainer/portainer/releases/download/2.19.4/portain
 USER portainer
 
 # Expose Portainer port
-EXPOSE 9000
+EXPOSE 9002
 
-# Start Portainer
-CMD ["portainer", "--data", "/data", "--host", "0.0.0.0:9000"]
+# Start Portainer with correct Docker socket path
+CMD ["portainer", "--bind=:9000", "--data=/data", "--host=unix:///var/run/docker.sock"]

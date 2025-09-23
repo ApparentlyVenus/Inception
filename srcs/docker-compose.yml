@@ -44,7 +44,7 @@ services:
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
     ports:
-      - "443:443"
+      - "443:443"  # ONLY nginx exposes HTTPS
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -56,6 +56,7 @@ services:
     container_name: adminer
     depends_on:
       - mariadb
+    # NO ports exposed - accessed via nginx proxy
     networks:
       - inception
     restart: always
@@ -63,6 +64,7 @@ services:
   redis:
     build: ./bonus/redis
     container_name: redis
+    # NO ports exposed - internal communication only
     networks:
       - inception
     restart: always
@@ -81,8 +83,8 @@ services:
       - FTP_USER=${FTP_USER}
       - FTP_PASS=${FTP_PASS}
     ports:
-      - "21:21"
-      - "21000-21010:21000-21010"
+      - "21:21"                    # FTP protocol exception
+      - "21000-21010:21000-21010"  # FTP passive mode ports
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -96,12 +98,10 @@ services:
     container_name: portainer
     volumes:
       - portainer_data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - inception
     restart: always
-    depends_on:
-      - nginx
 
 volumes:
   mariadb_data:
@@ -116,12 +116,6 @@ volumes:
       type: none
       o: bind
       device: /home/odana/data/wordpress
-  adminer_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/odana/data/adminer
   portainer_data:
     driver: local
     driver_opts:
