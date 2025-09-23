@@ -90,7 +90,19 @@ services:
     restart: always
     depends_on:
       - wordpress
-      
+
+  portainer:
+    build: ./bonus/portainer
+    container_name: portainer
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - inception
+    restart: always
+    depends_on:
+      - nginx
+
 volumes:
   mariadb_data:
     driver: local
@@ -110,6 +122,12 @@ volumes:
       type: none
       o: bind
       device: /home/odana/data/adminer
+  portainer_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/odana/data/portainer
 
 networks:
   inception:
