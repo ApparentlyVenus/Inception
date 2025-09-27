@@ -93,14 +93,16 @@ services:
     depends_on:
       - wordpress
 
-  grafana:
-    build: ./bonus/grafana
-    container_name: grafana
+  filebrowser:
+    build: ./bonus/filebrowser
+    container_name: filebrowser
     volumes:
-      - grafana_data:/var/lib/grafana
+      - wordpress_data:/var/www/html:ro
+      - filebrowser_data:/config
     networks:
       - inception
     restart: always
+  
 volumes:
   mariadb_data:
     driver: local
@@ -120,13 +122,13 @@ volumes:
       type: none
       o: bind
       device: /home/odana/data/adminer
-  grafana_data:
+  filebrowser_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/odana/data/grafana
-
+      device: /home/odana/data/filebrowser
+      
 networks:
   inception:
     driver: bridge
