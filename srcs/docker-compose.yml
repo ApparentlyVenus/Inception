@@ -56,7 +56,6 @@ services:
     container_name: adminer
     depends_on:
       - mariadb
-    # NO ports exposed - accessed via nginx proxy
     networks:
       - inception
     restart: always
@@ -64,7 +63,6 @@ services:
   redis:
     build: ./bonus/redis
     container_name: redis
-    # NO ports exposed - internal communication only
     networks:
       - inception
     restart: always
